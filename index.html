@@ -102,7 +102,7 @@
 
     <!-- 3D SAHNE -->
     <div id="canvas-container" class="fixed inset-0 w-full h-full z-0"></div>
-    <!-- ÜST CAN BARLARI (BOSS BAR TARZI) -->
+    <!-- ÜST CAN BARLARI -->
     <div id="hud-health-layer" class="fixed inset-0 pointer-events-none z-10 overflow-hidden"></div>
     <!-- BİLDİRİM TOASTLARI -->
     <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none w-full max-w-md px-4"></div>
@@ -112,9 +112,8 @@
         <div class="bg-slate-900 border-2 border-amber-400/80 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center">
             <div class="text-5xl mb-2">🥷⚔️</div>
             <h1 class="font-bungee text-3xl sm:text-4xl text-amber-400 tracking-wider arcade-outline">NINJA GAMES</h1>
-            <p class="text-slate-300 text-xs sm:text-sm mt-1">3D Brawl Arena • 35 Eşsiz Ninja</p>
+            <p class="text-slate-300 text-xs sm:text-sm mt-1">PC & Mobil • 35 Eşsiz Ninja</p>
 
-            <!-- SEKMELER -->
             <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-2xl mt-5 border border-slate-800">
                 <button id="tab-register" onclick="switchAuthTab('register')" class="py-2 rounded-xl font-bungee text-xs sm:text-sm bg-amber-400 text-slate-950 transition">KAYIT OL</button>
                 <button id="tab-login" onclick="switchAuthTab('login')" class="py-2 rounded-xl font-bungee text-xs sm:text-sm text-slate-400 hover:text-white transition">GİRİŞ YAP</button>
@@ -174,13 +173,13 @@
             </div>
         </header>
 
-        <!-- ORTA ALAN (SOL KART + 3D KARAKTER + SAĞ MENÜLER) -->
+        <!-- ORTA ALAN -->
         <div class="flex-1 flex items-center justify-between my-2 pointer-events-none">
             <!-- SOL KARAKTER BİLGİ KARTI -->
             <div id="lobby-char-card" class="pointer-events-auto bg-slate-900/85 backdrop-blur-md border-2 border-slate-700 rounded-3xl p-3.5 sm:p-4 w-52 sm:w-64 shadow-2xl">
                 <div class="flex items-center justify-between gap-1">
                     <span id="lobby-char-rarity" class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full rarity-duz-bg text-white">DÜZ</span>
-                    <span id="lobby-char-range-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-amber-300 border border-slate-600">⚔️ Yakın Mesafe</span>
+                    <span id="lobby-char-range-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-amber-300 border border-slate-600">⚔️ Yakın</span>
                 </div>
                 <h2 id="lobby-char-name" class="font-bungee text-base sm:text-lg text-white mt-1.5 leading-tight">ACEMİ ÇIRAK</h2>
                 <div class="mt-2.5 space-y-1 text-xs bg-slate-950/75 p-2.5 rounded-xl border border-slate-800">
@@ -263,7 +262,7 @@
         </div>
     </div>
 
-    <!-- 5. 3D ARENA HUD (MOBİL + PC UYUMLU) -->
+    <!-- 5. 3D ARENA HUD (PC + MOBİL CROSS-PLATFORM) -->
     <div id="arena-hud" class="fixed inset-0 z-20 pointer-events-none hidden flex flex-col justify-between p-3 sm:p-5">
         <!-- ÜST ARENA BİLGİ -->
         <div class="flex justify-between items-start">
@@ -281,7 +280,7 @@
             <button onclick="leaveArenaEarly()" class="pointer-events-auto brawl-btn bg-rose-600 text-white font-bungee text-xs px-3.5 py-2 rounded-xl">PES ET</button>
         </div>
 
-        <!-- ALT KONTROLLER (SOL JOYSTICK + CAN BAR + SAĞ SAMURAY SALDIRI & ULTİ) -->
+        <!-- ALT KONTROLLER (SOL JOYSTICK + PC KILAVUZU + SAĞ SALDIRI & ULTİ) -->
         <div class="flex justify-between items-end gap-2">
             <!-- SOL MOBİL SANAL JOYSTICK -->
             <div id="mobile-joystick-zone" class="pointer-events-auto w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-900/60 border-2 border-slate-600/70 relative flex items-center justify-center touch-none">
@@ -347,14 +346,6 @@
             supernova: 'SÜPERNOVA'
         };
 
-        const RARITY_COLORS_HEX = {
-            duz: 0x64748b,
-            destansi: 0xa855f7,
-            gizemli: 0xef4444,
-            efsanevi: 0xfacc15,
-            supernova: 0xff0088
-        };
-
         const NINJA_ROSTER_DATA = [
             { name: "Acemi Çırak", rarity: "duz", rangeType: "melee", sword: "Tahta Katana", ulti: "Hızlı Kesik", bodyColor: 0x475569, accentColor: 0x94a3b8 },
             { name: "Tozlu Gezgin", rarity: "duz", rangeType: "ranged", sword: "Paslı Tanto", ulti: "Rüzgar Dalgası", bodyColor: 0x52525b, accentColor: 0xa1a1aa },
@@ -400,7 +391,6 @@
         const ALL_NINJAS = NINJA_ROSTER_DATA.map((item, idx) => {
             const id = idx + 1;
             const isMelee = item.rangeType === 'melee';
-            // En zayıftan (id 1) en güçlüye (id 35) optimize can ve saldırı
             const baseHp = 80 + idx * 6 + (isMelee ? 25 : 0);
             const baseAtk = 14 + idx * 3 + (isMelee ? 5 : 0);
             const price = idx === 0 ? 0 : (150 + idx * 95);
@@ -416,7 +406,7 @@
                 price,
                 bodyColor: item.bodyColor,
                 accentColor: item.accentColor,
-                unlocked: id === 1 // Herkes sadece #1 Düz karakter ile başlar
+                unlocked: id === 1
             };
         });
 
@@ -435,10 +425,7 @@
 
         const PROMO_CODES = ['troxx', 'emirkilic', 'ahmetpinar', 'ownerportucle'];
 
-        // ==========================================
-        // 2. OYUNCU VE HESAP DURUMU (IN-MEMORY + KAYIT/GİRİŞ)
-        // ==========================================
-        let accountsDB = {}; // Kayıtlı hesaplar hafızası
+        let accountsDB = {};
         let authMode = 'register';
         let player = {
             username: "NinjaKral",
@@ -451,9 +438,6 @@
             claimedMilestones: []
         };
 
-        // ==========================================
-        // 3. HESAP SİSTEMİ FONKSİYONLARI
-        // ==========================================
         function switchAuthTab(mode) {
             authMode = mode;
             const regBtn = document.getElementById('tab-register');
@@ -569,15 +553,12 @@
             }, 2600);
         }
 
-        // ==========================================
-        // 4. THREE.JS 3D GERÇEKÇİ NİNJA & ARENA MOTORU
-        // ==========================================
         let scene, camera, renderer;
         let lobbyNinjaGroup = null;
         let arenaObjects = [];
         let swordSlashes = [];
         let fighters = [];
-        let gameMode = 'lobby'; // 'lobby' | 'arena'
+        let gameMode = 'lobby';
         let matchEnded = false;
         let mmTimer = null;
         let keysPressed = {};
@@ -600,7 +581,6 @@
             renderer.shadowMap.enabled = true;
             container.appendChild(renderer.domElement);
 
-            // Işıklandırma
             const hemiLight = new THREE.HemisphereLight(0xdbeafe, 0x0f172a, 0.95);
             scene.add(hemiLight);
 
@@ -646,7 +626,6 @@
             arenaObjects.push(ring);
         }
 
-        // GERÇEKÇİ ÇOK PARÇALI 3D NİNJA MODELİ OLUŞTURUCU
         function createRealisticNinjaMesh(ninjaData) {
             const root = new THREE.Group();
             const bodyMat = new THREE.MeshStandardMaterial({
@@ -662,7 +641,6 @@
                 roughness: 0.3
             });
 
-            // Bacaklar + Çizmeler
             const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.85, 0.28), darkMat);
             leftLeg.position.set(-0.2, 0.45, 0);
             root.add(leftLeg);
@@ -671,17 +649,14 @@
             rightLeg.position.set(0.2, 0.45, 0);
             root.add(rightLeg);
 
-            // Gövde Zırhı
             const torso = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.95, 0.44), bodyMat);
             torso.position.set(0, 1.32, 0);
             root.add(torso);
 
-            // Göğüs Çapraz Kayış & Kemer
             const belt = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.16, 0.48), accentMat);
             belt.position.set(0, 0.92, 0);
             root.add(belt);
 
-            // Omuzluklar (Samuray Zırh Plakaları)
             const leftShoulder = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.24, 0.48), accentMat);
             leftShoulder.position.set(-0.52, 1.68, 0);
             leftShoulder.rotation.z = 0.25;
@@ -692,12 +667,10 @@
             rightShoulder.rotation.z = -0.25;
             root.add(rightShoulder);
 
-            // Kafa & Ninja Maskesi
             const head = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.56, 0.56), darkMat);
             head.position.set(0, 2.08, 0);
             root.add(head);
 
-            // Parlayan Gözler
             const eyeMat = new THREE.MeshBasicMaterial({ color: ninjaData.accentColor });
             const leftEye = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.07, 0.05), eyeMat);
             leftEye.position.set(-0.14, 2.1, 0.28);
@@ -707,7 +680,6 @@
             rightEye.position.set(0.14, 2.1, 0.28);
             root.add(rightEye);
 
-            // Alın Bandı & Arkaya Uzanan Kurdeleler
             const headband = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.13, 0.62), accentMat);
             headband.position.set(0, 2.24, 0);
             root.add(headband);
@@ -722,13 +694,11 @@
             tail2.rotation.x = 0.55;
             root.add(tail2);
 
-            // Sol Kol
             const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.8, 0.24), bodyMat);
             leftArm.position.set(-0.54, 1.25, 0.1);
             leftArm.rotation.x = -0.35;
             root.add(leftArm);
 
-            // Sağ Kol + Samuray Katanası Pivot Grubu
             const swordPivot = new THREE.Group();
             swordPivot.position.set(0.54, 1.55, 0.05);
 
@@ -737,7 +707,6 @@
             rightArm.rotation.x = -0.6;
             swordPivot.add(rightArm);
 
-            // Detaylı Katana (Kabza + Tsuba Koruma + Kavisli Parlak Namlu)
             const hilt = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.36, 8), darkMat);
             hilt.position.set(0, -0.52, 0.42);
             hilt.rotation.x = Math.PI / 2.4;
@@ -796,9 +765,6 @@
             document.getElementById('hud-health-layer').innerHTML = '';
         }
 
-        // ==========================================
-        // 5. LOBİ VE İÇ İÇE MENÜLER
-        // ==========================================
         function updateLobbyUI() {
             const current = ALL_NINJAS.find(n => n.id === player.selectedNinjaId) || ALL_NINJAS[0];
             document.getElementById('ui-player-name').innerText = player.username;
@@ -829,7 +795,6 @@
             document.getElementById('nested-menu-modal').classList.remove('hidden');
             const body = document.getElementById('nested-menu-body');
 
-            // Sekme vurgu güncelleme
             ['nav-ninjas', 'nav-swords', 'nav-ultis', 'nav-market', 'nav-trophy', 'nav-promo'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.className = "px-3 py-2 rounded-xl font-bungee text-xs bg-slate-800 text-slate-300";
@@ -837,7 +802,6 @@
 
             if (section === 'characters' && subTab === 'ninjas') {
                 document.getElementById('nav-ninjas').className = "px-3 py-2 rounded-xl font-bungee text-xs bg-indigo-600 text-white";
-                // Açık karakterler üstte ayrı bölüm, kilitli olanlar zayıftan güçlüye altta
                 const unlockedNinjas = ALL_NINJAS.filter(n => n.unlocked);
                 const lockedNinjas = ALL_NINJAS.filter(n => !n.unlocked);
 
@@ -917,12 +881,10 @@
                 document.getElementById('nav-market').className = "px-3 py-2 rounded-xl font-bungee text-xs bg-purple-600 text-white";
                 body.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pb-6">
-                        <!-- GERÇEKÇİ DÖNEN ŞANS ÇARKI -->
                         <div class="bg-slate-900 border-2 border-purple-500/70 rounded-3xl p-5 flex flex-col items-center text-center">
                             <h3 class="font-bungee text-xl text-purple-300">🎡 ŞANS ÇARKI</h3>
                             <p class="text-xs text-slate-400 mt-1">Karakter, Kılıç/Ulti Paketi veya Ninja Coin kazan!</p>
                             <div class="relative w-64 h-64 my-5 flex items-center justify-center">
-                                <!-- ÜST İBRE -->
                                 <div class="absolute -top-3 z-20 text-3xl text-amber-400 drop-shadow">▼</div>
                                 <canvas id="wheel-canvas" width="256" height="256" class="rounded-full border-4 border-amber-400 shadow-2xl"></canvas>
                             </div>
@@ -931,7 +893,6 @@
                             </button>
                         </div>
 
-                        <!-- NİNJA COIN DÜKKANI -->
                         <div class="bg-slate-900 border-2 border-emerald-500/60 rounded-3xl p-5 flex flex-col justify-between">
                             <div>
                                 <h3 class="font-bungee text-xl text-emerald-300">🪙 NİNJA DÜKKANI</h3>
@@ -1093,9 +1054,6 @@
             openMenu('market', 'wheel');
         }
 
-        // ==========================================
-        // 6. GERÇEKÇİ FİZİKLİ ÇARK SİSTEMİ
-        // ==========================================
         const WHEEL_SLICES = [
             { label: "Düz Ninja", color: "#475569", type: "rarity", rarity: "duz" },
             { label: "+150 Coin", color: "#059669", type: "coins", amount: 150 },
@@ -1178,7 +1136,6 @@
                     requestAnimationFrame(step);
                 } else {
                     isSpinningWheel = false;
-                    // Üst ibre (-PI/2) hangi dilimde durdu?
                     const normalized = ((-Math.PI / 2 - wheelAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
                     const sliceIdx = Math.floor(normalized / ((Math.PI * 2) / WHEEL_SLICES.length));
                     const prize = WHEEL_SLICES[sliceIdx];
@@ -1214,9 +1171,6 @@
             if (btn) btn.innerText = `ÇARKI ÇEVİR (${player.spins} HAK)`;
         }
 
-        // ==========================================
-        // 7. 10 KİŞİLİK ARENA, DİNAMİK İSİMLER & SAMURAY KESİKLERİ
-        // ==========================================
         const NAME_PREFIXES = ["Golge", "Kizil", "Ay", "Firtina", "Siber", "Altin", "Gece", "Buz", "Alev", "Kurt", "Ejder", "Neon", "Yildirim", "Sis", "Kara", "Zehir", "Ruzgar", "Celik", "Vahsi", "Kozmik"];
         const NAME_SUFFIXES = ["Avci", "Ronin", "Samuray", "Katil", "Kral", "Usta", "Bey", "Han", "Sogun", "Ninja", "Beyi", "Kurt", "Kartal", "Kaplan", "Pars", "Sovalye", "Golge", "Kilic", "Yildiz", "Efsane"];
 
@@ -1279,7 +1233,6 @@
             gameMode = 'arena';
             playerUltiCharge = 100;
 
-            // 3D ARENA ZEMİNİ VE TAKTİKSEL DUVARLAR
             const floor = new THREE.Mesh(
                 new THREE.PlaneGeometry(54, 54),
                 new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.85 })
@@ -1293,7 +1246,6 @@
             scene.add(grid);
             arenaObjects.push(grid);
 
-            // Arena Sınır Çemberi
             const borderRing = new THREE.Mesh(
                 new THREE.RingGeometry(24.5, 25.2, 64),
                 new THREE.MeshBasicMaterial({ color: 0xef4444, side: THREE.DoubleSide })
@@ -1303,7 +1255,6 @@
             scene.add(borderRing);
             arenaObjects.push(borderRing);
 
-            // Arena Sütunları
             const pillarPositions = [[-8, -8], [8, -8], [-8, 8], [8, 8], [0, -14], [0, 14]];
             pillarPositions.forEach(([px, pz]) => {
                 const pillar = new THREE.Mesh(
@@ -1315,18 +1266,14 @@
                 arenaObjects.push(pillar);
             });
 
-            // 10 SAVAŞÇIYI OLUŞTUR (1 Oyuncu + 9 Rastgele İsimli Rakip)
             const playerNinjaData = ALL_NINJAS.find(n => n.id === player.selectedNinjaId) || ALL_NINJAS[0];
             const randomNames = generateUniqueNames(9, player.username);
 
-            // Oyuncu #0
             spawnFighter(player.username, playerNinjaData, true, 0, 0);
 
-            // 9 Rakip
             for (let i = 0; i < 9; i++) {
                 const angle = (i / 9) * Math.PI * 2;
                 const radius = 15 + Math.random() * 5;
-                // Dengeli karakter havuzu
                 const poolMax = Math.min(ALL_NINJAS.length, Math.max(8, playerNinjaData.id + 5));
                 const rNinja = ALL_NINJAS[Math.floor(Math.random() * poolMax)];
                 spawnFighter(randomNames[i], rNinja, false, Math.cos(angle) * radius, Math.sin(angle) * radius);
@@ -1340,7 +1287,6 @@
             mesh.position.set(x, 0, z);
             scene.add(mesh);
 
-            // Küçük Boss Bar Tarzı Üst Can Göstergesi (100/72 formatında)
             const hpTag = document.createElement('div');
             hpTag.className = "absolute -translate-x-1/2 -translate-y-full pointer-events-none flex flex-col items-center";
             hpTag.innerHTML = `
@@ -1368,17 +1314,15 @@
             });
         }
 
-        // SAMURAY KILICI ENERJİ KESİĞİ (HİLAL DALGASI) FIRLATMA
         function performSamuraiSlash(fighter, isUlti = false) {
             if (!fighter.alive || fighter.attackCooldown > 0) return;
 
             const isMelee = fighter.ninjaData.rangeType === 'melee';
             fighter.attackCooldown = isUlti ? 0.3 : (isMelee ? 0.45 : 0.55);
-            fighter.mesh.userData.swingTimer = 0.28; // Katana savurma animasyonu
+            fighter.mesh.userData.swingTimer = 0.28;
 
             const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), fighter.mesh.rotation.y);
 
-            // Parlayan Samuray Kılıcı Kesiği (Hilal/Arc Geometrisi)
             const slashWidth = isUlti ? 2.6 : (isMelee ? 2.1 : 1.3);
             const slashGeo = new THREE.RingGeometry(slashWidth * 0.55, slashWidth, 18, 1, Math.PI * 0.15, Math.PI * 0.7);
             const slashMat = new THREE.MeshBasicMaterial({
@@ -1397,7 +1341,7 @@
 
             const damage = Math.round(fighter.ninjaData.atk * (isUlti ? 2.1 : 1.0));
             const speed = isMelee ? 15 : 24;
-            const maxLife = isMelee ? 0.24 : 0.68; // Yakın mesafe kısa & geniş kesik, Uzak mesafe uzun kılıç dalgası
+            const maxLife = isMelee ? 0.24 : 0.68;
 
             swordSlashes.push({
                 owner: fighter,
@@ -1450,14 +1394,12 @@
                 const pct = Math.max(0, (p.hp / p.maxHp) * 100);
                 document.getElementById('hud-player-hp-bar').style.width = `${pct}%`;
 
-                // Oyuncu elendiyse
                 if (!p.alive && !matchEnded) {
                     endMatch(false);
                     return;
                 }
             }
 
-            // Son 1 kişi kaldıysa ve oyuncu hayattaysa
             if (aliveFighters.length === 1 && aliveFighters[0].isPlayer && !matchEnded) {
                 endMatch(true);
             }
@@ -1503,9 +1445,6 @@
             document.getElementById('lobby-ui').classList.remove('hidden');
         }
 
-        // ==========================================
-        // 8. KONTROLLER (PC KLAVYE + MOBİL SANAL JOYSTICK)
-        // ==========================================
         function setupControls() {
             window.addEventListener('keydown', (e) => {
                 keysPressed[e.code] = true;
@@ -1563,7 +1502,6 @@
             zone.addEventListener('touchend', resetJoy);
             zone.addEventListener('touchcancel', resetJoy);
 
-            // Masaüstü fare ile sürükleme desteği
             let mouseDragging = false;
             zone.addEventListener('mousedown', (e) => {
                 mouseDragging = true;
@@ -1580,9 +1518,6 @@
             });
         }
 
-        // ==========================================
-        // 9. ANA ANİMASYON VE FİZİK DÖNGÜSÜ
-        // ==========================================
         let lastFrameTime = performance.now();
 
         function animateLoop(now) {
@@ -1612,13 +1547,11 @@
         function updateArenaSimulation(dt, timeSec) {
             playerUltiCharge = Math.min(100, playerUltiCharge + dt * 14);
 
-            // 1. Savaşçıları Güncelle
             fighters.forEach(f => {
                 if (!f.alive) return;
 
                 if (f.attackCooldown > 0) f.attackCooldown -= dt;
 
-                // Katana savurma animasyonu
                 if (f.mesh.userData.swingTimer > 0) {
                     f.mesh.userData.swingTimer -= dt;
                     f.mesh.userData.swordPivot.rotation.y = Math.sin(f.mesh.userData.swingTimer * 22) * 1.8;
@@ -1626,7 +1559,6 @@
                     f.mesh.userData.swordPivot.rotation.y = 0;
                 }
 
-                // SüperNova RGB gökkuşağı zırh animasyonu
                 if (f.mesh.userData.isSupernova) {
                     const hue = (timeSec * 0.4 + f.ninjaData.id) % 1;
                     f.mesh.userData.bodyMat.color.setHSL(hue, 0.9, 0.55);
@@ -1645,7 +1577,6 @@
                         moveZ = joyVector.z;
                     }
                 } else {
-                    // Akıllı Rakip Yapay Zekası
                     f.aiTimer -= dt;
                     let nearest = null;
                     let minDist = Infinity;
@@ -1669,7 +1600,6 @@
                             moveX = toTarget.x;
                             moveZ = toTarget.z;
                         } else {
-                            // Hedefe dön ve samuray kesiği at
                             f.mesh.rotation.y = Math.atan2(toTarget.x, toTarget.z);
                             if (f.attackCooldown <= 0) {
                                 performSamuraiSlash(f, false);
@@ -1687,7 +1617,6 @@
                     f.mesh.position.z += moveZ * speed * dt;
                     f.mesh.rotation.y = Math.atan2(moveX, moveZ);
 
-                    // Koşma adım animasyonu
                     const swing = Math.sin(timeSec * 14) * 0.45;
                     f.mesh.userData.leftLeg.rotation.x = swing;
                     f.mesh.userData.rightLeg.rotation.x = -swing;
@@ -1696,7 +1625,6 @@
                     f.mesh.userData.rightLeg.rotation.x = 0;
                 }
 
-                // Arena sınırları içinde tut
                 const distFromCenter = Math.hypot(f.mesh.position.x, f.mesh.position.z);
                 if (distFromCenter > 24.2) {
                     const ratio = 24.2 / distFromCenter;
@@ -1704,7 +1632,6 @@
                     f.mesh.position.z *= ratio;
                 }
 
-                // Üst Mini Can Barı Ekran İzdüşümü
                 const headPos = f.mesh.position.clone();
                 headPos.y += 2.85;
                 headPos.project(camera);
@@ -1716,14 +1643,12 @@
                 f.hpTag.querySelector('.hp-fill').style.width = `${Math.max(0, (f.hp / f.maxHp) * 100)}%`;
                 f.hpTag.querySelector('.hp-num').innerText = `${Math.max(0, Math.ceil(f.hp))}/${f.maxHp}`;
 
-                // Brawl Stars tarzı izometrik takip kamerası
                 if (f.isPlayer) {
                     camera.position.lerp(new THREE.Vector3(f.mesh.position.x, 14.5, f.mesh.position.z + 13.5), 0.12);
                     camera.lookAt(f.mesh.position.x, 1.0, f.mesh.position.z);
                 }
             });
 
-            // 2. Samuray Kılıcı Enerji Kesiklerini Güncelle
             for (let i = swordSlashes.length - 1; i >= 0; i--) {
                 const s = swordSlashes[i];
                 s.life -= dt;
